@@ -6,6 +6,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.javamon.util.Utilities;
+
 public class TileMap {
 
 	// position
@@ -67,6 +69,7 @@ public class TileMap {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
+			Utilities.createErrorDialog("TileSet Error", "An error occured while loading a tileset\n" + e.toString() + tileSet, e);
 		}
 	}
 
@@ -128,7 +131,7 @@ public class TileMap {
 		return height; 
 	}
 
-	public int  getType(int row, int col) {
+	public int getType(int row, int col) {
 		// return Tile.BLOCKED if row or col are outside the map[][]
 		if (row >= numRows || row < 0) {
 			// LogHelper.logError("Parameter row is out of bounds: " + row);
@@ -143,6 +146,23 @@ public class TileMap {
 		int r = rc / numTilesAcross;
 		int c = rc % numTilesAcross;
 		return tiles[r][c].getType();
+	}
+	
+	public boolean isBlocked(int row, int col) {
+		// return Tile.BLOCKED if row or col are outside the map[][]
+		if (row >= numRows || row < 0) {
+			// LogHelper.logError("Parameter row is out of bounds: " + row);
+			return true;
+		}
+		if (col >= numCols || col < 0) {
+			// LogHelper.logError("Parameter col is out of bounds: " + col);
+			return true;
+		}
+
+		int rc = map[row][col];
+		int r = rc / numTilesAcross;
+		int c = rc % numTilesAcross;
+		return tiles[r][c].isBlocked();
 	}
 
 	public void setTween(double d) { 
@@ -177,8 +197,6 @@ public class TileMap {
 				int rc = map[row][col];
 				int r = rc / numTilesAcross;
 				int c = rc % numTilesAcross;
-
-				//if(r > 1) return;
 
 				g.drawImage(tiles[r][c].getImage(), (int) x + col * tileSize, (int) y + row * tileSize, null);	
 			}
